@@ -1,5 +1,13 @@
 app:
-  telegram-token: ${TELEGRAM_TOKEN} # env variable
+  telegram-token: ${TELEGRAM_TOKEN}
+  scrapper-url: http://localhost:8081
+
+logging:
+  structured:
+    format:
+      file: ecs
+  file:
+    name: log.json
 
 spring:
   application:
