@@ -19,5 +19,11 @@
 Для работы требуется БД `PostgreSQL`. Присутствует опциональная зависимость на `Kafka`.
 
 На данный момент проект можно запустить запустив приложения bot и scrapper в IDEA.
+Чтобы опробовать бота в telegram создайтe .env в корне проекта, указав:
+```cmd
+TELEGRAM_TOKEN=your_telegram_token
+GITHUB_TOKEN=your_github_token
+SO_TOKEN_KEY=your_stackoverflow_token
+```
 
 Для дополнительной справки: [HELP.md](./HELP.md)
