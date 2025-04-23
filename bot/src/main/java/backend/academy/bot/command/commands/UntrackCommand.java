@@ -48,10 +48,10 @@ public class UntrackCommand implements Command {
     private void untrackAwaitUrl(Long chatId, String message) {
         chatSessionService.setAttribute(chatId, "url", message);
         ChatSession chatSession = chatSessionService.getChatSession(chatId);
-        chatSessionService.cleanAttributes(chatId);
         chatSessionService.setState(chatId, "IDLE");
 
         bot.execute(new SendMessage(chatId, sendRequest(chatId, chatSession)));
+        chatSessionService.cleanAttributes(chatId);
     }
 
     private void untrackCommand(Long chatId) {
