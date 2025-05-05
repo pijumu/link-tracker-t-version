@@ -1,7 +1,7 @@
 package backend.academy.scrapper.service;
 
 import backend.academy.dto.dto.LinkUpdate;
-import backend.academy.scrapper.client.BotClient;
+import backend.academy.scrapper.client.bot.BotClient;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

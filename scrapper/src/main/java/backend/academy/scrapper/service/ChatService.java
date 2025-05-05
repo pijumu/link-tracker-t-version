@@ -1,19 +1,17 @@
 package backend.academy.scrapper.service;
 
+import backend.academy.scrapper.domain.IChatRepository;
+import backend.academy.scrapper.domain.dto.Chat;
 import backend.academy.scrapper.exception.ChatAlreadyRegisteredException;
 import backend.academy.scrapper.exception.ChatNotFoundException;
-import backend.academy.scrapper.model.Chat;
-import backend.academy.scrapper.repository.IChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
     private final IChatRepository chatRepository;
 
-    @Transactional
     public void registerChat(long chatId) {
         if (chatRepository.isRegistered(chatId)) {
             throw new ChatAlreadyRegisteredException("Чат " + chatId + " уже зарегистрирован.");
@@ -21,11 +19,14 @@ public class ChatService {
         chatRepository.add(new Chat(chatId));
     }
 
-    @Transactional
     public void removeChat(long chatId) {
         if (!chatRepository.isRegistered(chatId)) {
             throw new ChatNotFoundException("Чат с " + chatId + " не существует.");
         }
         chatRepository.remove(chatId);
+    }
+
+    public boolean isRegisteredChat(long chatId) {
+        return chatRepository.isRegistered(chatId);
     }
 }

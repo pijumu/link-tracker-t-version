@@ -1,9 +1,10 @@
 package backend.academy.scrapper.service;
 
 import backend.academy.scrapper.client.ExternalClientManager;
-import backend.academy.scrapper.client.Notifier;
+import backend.academy.scrapper.client.util.UpdateDto;
+import backend.academy.scrapper.domain.ILinkRepository;
 import backend.academy.scrapper.parser.ParsedUrl;
-import backend.academy.scrapper.repository.ILinkRepository;
+import backend.academy.scrapper.util.Constants;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,10 @@ public class UpdateCheckerService {
         for (String url : linkRepository.getUrls()) {
             try {
                 ParsedUrl parsedUrl = urlParserService.parse(url);
-                Notifier notifier = externalClientManager.getNotifier(parsedUrl);
-                List<Long> followersToUpdate = linkRepository.getFollowers(url, notifier.getFormattedTime());
+                UpdateDto update = externalClientManager.getUpdate(parsedUrl);
+                List<Long> followersToUpdate = linkRepository.getFollowers(url, update.lastTimeUpdated());
                 if (!followersToUpdate.isEmpty()) {
-                    notificationService.notify(url, notifier.getMessage(), followersToUpdate);
+                    notificationService.notify(url, Constants.UPDATE_MESSAGE.formatted(url), followersToUpdate);
                 }
             } catch (Exception e) {
                 log.error("Failed to parse link {}", url, e);

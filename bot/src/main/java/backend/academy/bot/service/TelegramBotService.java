@@ -1,38 +1,33 @@
 package backend.academy.bot.service;
 
-import backend.academy.bot.command.CommandMetadata;
+import backend.academy.bot.fsm.transition.contract.Command;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class TelegramBotService {
     private final TelegramBot bot;
     private final HandlerService handlerService;
-    private final ApplicationContext applicationContext;
 
     @Autowired
-    public TelegramBotService(ApplicationContext applicationContext, TelegramBot bot, HandlerService handlerService) {
+    public TelegramBotService(TelegramBot bot, HandlerService service, List<Command> commands) {
         this.bot = bot;
-        this.handlerService = handlerService;
-        this.applicationContext = applicationContext;
-    }
-
-    @PostConstruct
-    public void initCommands() {
-        SetMyCommands setMyCommands =
-                new SetMyCommands(applicationContext.getBeansWithAnnotation(CommandMetadata.class).values().stream()
-                        .map(bean -> {
-                            CommandMetadata annotation = bean.getClass().getAnnotation(CommandMetadata.class);
-                            return new BotCommand(annotation.name(), annotation.description());
-                        })
-                        .toArray(BotCommand[]::new));
+        this.handlerService = service;
+        SetMyCommands setMyCommands = new SetMyCommands(commands.stream()
+                .map(command -> {
+                    log.debug("Команда {} была установлена.", command.getName());
+                    return new BotCommand(command.getName(), command.getDescription());
+                })
+                .toArray(BotCommand[]::new));
         bot.execute(setMyCommands);
     }
 

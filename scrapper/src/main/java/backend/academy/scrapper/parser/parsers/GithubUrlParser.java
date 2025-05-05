@@ -5,6 +5,7 @@ import static backend.academy.dto.validator.validators.GithubUrlValidator.GITHUB
 import backend.academy.dto.validator.UrlType;
 import backend.academy.scrapper.parser.ParsedUrl;
 import backend.academy.scrapper.parser.UrlParser;
+import backend.academy.scrapper.util.Constants;
 import java.util.Map;
 import java.util.regex.Matcher;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,8 @@ public class GithubUrlParser implements UrlParser {
             throw new IllegalArgumentException("Invalid GitHub URL");
         }
         Map<String, String> vars = Map.of(
-                "owner", matcher.group("owner"),
-                "repo", matcher.group("repo"));
+                Constants.OWNER, matcher.group("owner"),
+                Constants.REPO, matcher.group("repo"));
         return new ParsedUrl(UrlType.GITHUB, vars);
     }
 

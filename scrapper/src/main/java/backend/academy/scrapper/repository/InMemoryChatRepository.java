@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.model.Chat;
+import backend.academy.scrapper.domain.IChatRepository;
+import backend.academy.scrapper.domain.dto.Chat;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.model.Link;
+import backend.academy.scrapper.domain.ILinkRepository;
+import backend.academy.scrapper.domain.dto.Link;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -16,6 +16,10 @@ public class UrlValidatorService implements ConstraintValidator<ValidUrl, String
         return determineUrlType(url) != UrlType.INVALID;
     }
 
+    public boolean isValid(String url) {
+        return determineUrlType(url) != UrlType.INVALID;
+    }
+
     public UrlType determineUrlType(String url) {
         if (url == null) {
             return UrlType.INVALID;

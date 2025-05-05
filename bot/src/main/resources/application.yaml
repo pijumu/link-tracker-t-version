@@ -3,11 +3,8 @@ app:
   scrapper-url: http://localhost:8081
 
 logging:
-  structured:
-    format:
-      file: ecs
-  file:
-    name: log.json
+  level:
+    root: INFO
 
 spring:
   application:

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUrl {
-    String message() default "Неверный формат ссылки /help";
+    String message() default "Неверный формат ссылки /help.";
 
     Class<?>[] groups() default {};
 
