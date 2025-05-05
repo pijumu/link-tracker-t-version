@@ -43,8 +43,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
             /start - регистрация чата
             /track - добавить ссылку для отслеживания
             /untrack - остановить отслеживание ссылки
-            /help - список команд
-            """;
+            /help - список команд""";
 
         Long chatId = 2L;
         String command = "/help";
@@ -72,8 +71,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
             /start - регистрация чата
             /track - добавить ссылку для отслеживания
             /untrack - остановить отслеживание ссылки
-            /help - список команд
-            """;
+            /help - список команд""";
 
         Long chatId = 3L;
         String command = "/help";
@@ -98,13 +96,10 @@ public class FsmServiceTest extends FsmServiceContextTest {
             🔗 Ссылка: https://github.com/pijumu/ASL-Recognition-Model
             🏷 Теги: не указаны
             🎛 Фильтры: filter1, filter2
-
             🆔 ID: 4
             🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
             🏷 Теги: tag1, tag2
-            🎛 Фильтры: не указаны
-
-            """;
+            🎛 Фильтры: не указаны""";
 
         Long chatId = 4L;
         String command = "/list";

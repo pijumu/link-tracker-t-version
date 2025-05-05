@@ -80,8 +80,7 @@ public class HelpCommandTest {
             /start - регистрация чата
             /track - добавить ссылку для отслеживания
             /untrack - остановить отслеживание ссылки
-            /help - список команд
-            """;
+            /help - список команд""";
 
         // Act
         String message = helpCommand.formMessageFromIdleState(chatId);

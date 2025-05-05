@@ -36,13 +36,10 @@ public class ListCommandTest {
             🔗 Ссылка: https://github.com/pijumu/ASL-Recognition-Model
             🏷 Теги: не указаны
             🎛 Фильтры: filter1, filter2
-
             🆔 ID: 1
             🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
             🏷 Теги: tag1, tag2
-            🎛 Фильтры: не указаны
-
-            """;
+            🎛 Фильтры: не указаны""";
         when(scrapperClient.getLinks(chatId))
                 .thenReturn(new ListLinksResponse(
                         List.of(
