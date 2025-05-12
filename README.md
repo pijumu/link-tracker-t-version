@@ -27,3 +27,49 @@ SO_TOKEN_KEY=your_stackoverflow_token
 ```
 
 Для дополнительной справки: [HELP.md](./HELP.md)
+
+## Схемы
+
+### Компоненты Bot’а
+
+<div align="center">
+
+<img src="meta/FSM.png" alt="FSM конечного автомата" width="700"/>
+<br/>
+<em>Рис. 1. Конечный автомат (FSM) команд бота</em>
+
+</div>
+
+<div align="center">
+
+<img src="meta/Работа%20с%20контекстом.png" alt="Контекст общения" width="700"/>
+<br/>
+<em>Рис. 2. Получение и хранение контекста диалога</em>
+
+</div>
+
+### Компоненты Scrapper’а
+
+<div align="center">
+
+<img src="meta/БД%20данные.png" alt="ER-диаграмма базы данных" width="700"/>
+<br/>
+<em>Рис. 3. ER-диаграмма базы данных ссылок</em>
+
+</div>
+
+<div align="center">
+
+<img src="meta/Работа%20с%20данными.png" alt="Слой доступа к данным" width="700"/>
+<br/>
+<em>Рис. 4. Слой доступа и адаптеры к данным</em>
+
+</div>
+
+<div align="center">
+
+<img src="meta/Проверка%20обновлений.png" alt="Поток обновлений" width="700"/>
+<br/>
+<em>Рис. 5. Поток обновлений (tracker) Scrapper’а</em>
+
+</div>
