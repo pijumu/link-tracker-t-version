@@ -1,7 +1,7 @@
 package backend.academy.scrapper.test.unit;
 
-import backend.academy.dto.validator.UrlType;
-import backend.academy.scrapper.parser.ParsedUrl;
+import backend.academy.dto.validator.util.UrlType;
+import backend.academy.scrapper.domain.dto.ParsedUrlDto;
 import backend.academy.scrapper.parser.UrlParser;
 import backend.academy.scrapper.parser.parsers.GithubUrlParser;
 import backend.academy.scrapper.parser.parsers.StackOverflowUrlParser;
@@ -25,15 +25,15 @@ public class ParsingTest {
     @DisplayName("Проверка github парсера. Позитивный сценарий.")
     void test1() {
         // Act
-        ParsedUrl parsedUrl = githubParser.parse("https://github.com/pijumu/ASL-Recognition-Model");
+        ParsedUrlDto parsedUrlDto = githubParser.parse("https://github.com/pijumu/ASL-Recognition-Model");
 
         // Assert
-        Assertions.assertEquals(parsedUrl.urlType(), UrlType.GITHUB);
-        Assertions.assertTrue(parsedUrl.params().containsKey("owner"), "В параметры должен выделяться ключ owner");
-        Assertions.assertTrue(parsedUrl.params().containsKey("repo"), "В параметры должен выделяться ключ repo");
+        Assertions.assertEquals(parsedUrlDto.urlType(), UrlType.GITHUB);
+        Assertions.assertTrue(parsedUrlDto.params().containsKey("owner"), "В параметры должен выделяться ключ owner");
+        Assertions.assertTrue(parsedUrlDto.params().containsKey("repo"), "В параметры должен выделяться ключ repo");
 
-        Assertions.assertEquals(parsedUrl.params().get("owner"), "pijumu");
-        Assertions.assertEquals(parsedUrl.params().get("repo"), "ASL-Recognition-Model");
+        Assertions.assertEquals(parsedUrlDto.params().get("owner"), "pijumu");
+        Assertions.assertEquals(parsedUrlDto.params().get("repo"), "ASL-Recognition-Model");
     }
 
     @Test
@@ -50,13 +50,13 @@ public class ParsingTest {
     @DisplayName("Проверка stackoverflow парсера. Позитивный сценарий.")
     void test3() {
         // Act
-        ParsedUrl parsedUrl = stackOverflowParser.parse("https://stackoverflow.com/questions/127");
+        ParsedUrlDto parsedUrlDto = stackOverflowParser.parse("https://stackoverflow.com/questions/127");
 
         // Assert
-        Assertions.assertEquals(parsedUrl.urlType(), UrlType.STACKOVERFLOW);
+        Assertions.assertEquals(parsedUrlDto.urlType(), UrlType.STACKOVERFLOW);
         Assertions.assertTrue(
-                parsedUrl.params().containsKey("questionId"), "В параметры должен выделяться ключ questionId");
-        Assertions.assertEquals(parsedUrl.params().get("questionId"), "127");
+                parsedUrlDto.params().containsKey("questionId"), "В параметры должен выделяться ключ questionId");
+        Assertions.assertEquals(parsedUrlDto.params().get("questionId"), "127");
     }
 
     @Test

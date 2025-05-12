@@ -43,6 +43,9 @@ public class FsmServiceTest extends FsmServiceContextTest {
             /start - регистрация чата
             /track - добавить ссылку для отслеживания
             /untrack - остановить отслеживание ссылки
+            /cancel - переход в меню команд
+            /by_tags - получить все ссылки по тегам
+            /change_tags - поменять теги для ссылки
             /help - список команд""";
 
         Long chatId = 2L;
@@ -71,6 +74,9 @@ public class FsmServiceTest extends FsmServiceContextTest {
             /start - регистрация чата
             /track - добавить ссылку для отслеживания
             /untrack - остановить отслеживание ссылки
+            /cancel - переход в меню команд
+            /by_tags - получить все ссылки по тегам
+            /change_tags - поменять теги для ссылки
             /help - список команд""";
 
         Long chatId = 3L;
@@ -96,6 +102,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
             🔗 Ссылка: https://github.com/pijumu/ASL-Recognition-Model
             🏷 Теги: не указаны
             🎛 Фильтры: filter1, filter2
+
             🆔 ID: 4
             🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
             🏷 Теги: tag1, tag2
@@ -104,19 +111,19 @@ public class FsmServiceTest extends FsmServiceContextTest {
         Long chatId = 4L;
         String command = "/list";
         when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
-        when(scrapperClient.getLinks(chatId))
+        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(
                         List.of(
                                 new LinkResponse(
                                         4L,
                                         "https://github.com/pijumu/ASL-Recognition-Model",
-                                        Collections.emptyList(),
-                                        List.of("filter1", "filter2")),
+                                        List.of("filter1", "filter2"),
+                                        Collections.emptyList()),
                                 new LinkResponse(
                                         4L,
                                         "https://github.com/TaTaTa/PuPuPU",
-                                        List.of("tag1", "tag2"),
-                                        Collections.emptyList())),
+                                        Collections.emptyList(),
+                                        List.of("tag1", "tag2"))),
                         2));
 
         // Act
@@ -136,7 +143,8 @@ public class FsmServiceTest extends FsmServiceContextTest {
         Long chatId = 5L;
         String command = "/list";
         when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
-        when(scrapperClient.getLinks(chatId)).thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
+        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+                .thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         // Act
         String message = fsmService.handle(command, chatId);
@@ -150,22 +158,24 @@ public class FsmServiceTest extends FsmServiceContextTest {
     void test6() {
         // Arrange
         String expected1 = "Введите ссылку.";
-        String expected2 = "Введите фильтры через пробел. Используйте '-', если фильтры не нужны.";
-        String expected3 = "Введите теги через пробел. Используйте '-', если фильтры не нужны.";
+        String expected2 =
+                "Введите теги через пробел. Тегов должно быть не больше 3. Используйте /skip, если теги не нужны.";
+        String expected3 =
+                "Введите фильтры через пробел. Фильтров должно быть не больше 3. Используйте /skip, если фильтры не нужны.";
         String expected4 = "Ссылка успешна добавлена.";
 
         Long chatId = 6L;
         String command = "/track";
         String inputUrl = "https://github.com/pijumu/ASL-Recognition-Model";
+        String inputTags = "/skip";
         String inputFilters = "filter1";
-        String inputTags = "-";
         when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
 
         // Act
         String message1 = fsmService.handle(command, chatId);
         String message2 = fsmService.handle(inputUrl, chatId);
-        String message3 = fsmService.handle(inputFilters, chatId);
-        String message4 = fsmService.handle(inputTags, chatId);
+        String message3 = fsmService.handle(inputTags, chatId);
+        String message4 = fsmService.handle(inputFilters, chatId);
 
         // Assert
         Assertions.assertEquals(expected1, message1);
@@ -179,7 +189,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
     void test7() {
         // Arrange
         String expected1 = "Введите ссылку.";
-        String expected2 = "Ссылка не соответствует формату валидной ссылки. Используйте /help команду.";
+        String expected2 = "Ошибка! Невалидная ссылка! Cмотри /help Введите ещё раз!";
 
         Long chatId = 7L;
         String command = "/track";

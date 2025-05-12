@@ -1,33 +1,24 @@
 package backend.academy.bot.service;
 
+import static backend.academy.bot.fsm.Constants.ERROR_MESSAGE;
+
 import backend.academy.bot.domain.CacheChatContextRepository;
 import backend.academy.bot.domain.ChatContext;
-import backend.academy.bot.fsm.MessageConstants;
-import backend.academy.bot.fsm.state.State;
-import backend.academy.bot.fsm.state.StateEntry;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import backend.academy.bot.fsm.highhierarchystate.Idle;
+import backend.academy.bot.fsm.highhierarchystate.InCommand;
+import backend.academy.bot.fsm.highhierarchystate.NotRegistered;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FsmService {
-    private final ConcurrentMap<StateEntry, State> states;
     private final CacheChatContextRepository cacheChatContextRepository;
-
-    public FsmService(ApplicationContext applicationContext, CacheChatContextRepository cacheChatContextRepository) {
-        this.states = new ConcurrentHashMap<>();
-        Arrays.stream(StateEntry.values()).forEach(entry -> {
-            log.debug("Creating state entry: {}", entry);
-            Class<?> clazz = entry.stateHandlerClass();
-            State stateBean = (State) applicationContext.getBean(clazz);
-            states.put(entry, stateBean);
-        });
-        this.cacheChatContextRepository = cacheChatContextRepository;
-    }
+    private final Idle idle;
+    private final NotRegistered notRegistered;
+    private final InCommand inCommand;
 
     /*
         Есть ли смысл в несколько потоков делать?
@@ -36,10 +27,14 @@ public class FsmService {
     public String handle(String input, Long chatId) {
         try {
             ChatContext context = cacheChatContextRepository.get(chatId);
-            return states.get(context.state()).handle(input, chatId, context);
+            return switch (context.state()) {
+                case IDLE -> idle.handle(chatId, input, context);
+                case NOT_REGISTERED -> notRegistered.handle(chatId, input, context);
+                default -> inCommand.handle(chatId, input, context);
+            };
         } catch (Exception e) {
             log.error("Ошибка при обработке сообщения {} с chatId {}: {}", input, chatId, e.getMessage());
-            return MessageConstants.ERROR_MESSAGE;
+            return ERROR_MESSAGE;
         }
     }
 }

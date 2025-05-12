@@ -57,6 +57,7 @@
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <error-prone.version>2.36.0</error-prone.version>
+        <checkerframework.version>3.48.3</checkerframework.version>
 
         <!-- Spotless -->
         <spotless-maven-plugin.version>2.44.2</spotless-maven-plugin.version>
@@ -148,6 +149,11 @@
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
                 <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checkerframework.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

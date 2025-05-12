@@ -1,9 +1,11 @@
 package backend.academy.bot.test.unit;
 
+import static backend.academy.bot.fsm.State.IDLE;
 import static org.mockito.Mockito.when;
 
-import backend.academy.bot.fsm.transition.command.ListCommand;
-import backend.academy.bot.service.ScrapperClient;
+import backend.academy.bot.domain.ChatContext;
+import backend.academy.bot.fsm.command.ListCommand;
+import backend.academy.bot.scrapper.ScrapperClient;
 import backend.academy.dto.dto.LinkResponse;
 import backend.academy.dto.dto.ListLinksResponse;
 import java.util.Collections;
@@ -31,16 +33,17 @@ public class ListCommandTest {
         Long chatId = 1L;
         String expected =
                 """
-            Список отслеживаемых ссылок:
-            🆔 ID: 1
-            🔗 Ссылка: https://github.com/pijumu/ASL-Recognition-Model
-            🏷 Теги: не указаны
-            🎛 Фильтры: filter1, filter2
-            🆔 ID: 1
-            🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
-            🏷 Теги: tag1, tag2
-            🎛 Фильтры: не указаны""";
-        when(scrapperClient.getLinks(chatId))
+                Список отслеживаемых ссылок:
+                🆔 ID: 1
+                🔗 Ссылка: https://github.com/pijumu/ASL-Recognition-Model
+                🏷 Теги: filter1, filter2
+                🎛 Фильтры: не указаны
+
+                🆔 ID: 1
+                🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
+                🏷 Теги: не указаны
+                🎛 Фильтры: tag1, tag2""";
+        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(
                         List.of(
                                 new LinkResponse(
@@ -56,7 +59,8 @@ public class ListCommandTest {
                         2));
 
         // Act
-        String message = listCommand.formMessageFromIdleState(chatId);
+        String message =
+                listCommand.handle(chatId, "/list", ChatContext.builder(IDLE).build());
 
         // Assert
         Assertions.assertEquals(expected, message);
@@ -68,10 +72,12 @@ public class ListCommandTest {
         // Arrange
         Long chatId = 1L;
         String expected = "Вы не отслеживаете ссылок.";
-        when(scrapperClient.getLinks(chatId)).thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
+        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+                .thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         // Act
-        String message = listCommand.formMessageFromIdleState(chatId);
+        String message =
+                listCommand.handle(chatId, "/list", ChatContext.builder(IDLE).build());
 
         // Assert
         Assertions.assertEquals(expected, message);

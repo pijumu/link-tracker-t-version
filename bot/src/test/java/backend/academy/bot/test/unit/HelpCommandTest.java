@@ -1,14 +1,16 @@
 package backend.academy.bot.test.unit;
 
+import static backend.academy.bot.fsm.State.IDLE;
 import static org.mockito.Mockito.when;
 
-import backend.academy.bot.fsm.transition.command.HelpCommand;
-import backend.academy.bot.fsm.transition.command.ListCommand;
-import backend.academy.bot.fsm.transition.command.StartCommand;
-import backend.academy.bot.fsm.transition.command.TrackCommand;
-import backend.academy.bot.fsm.transition.command.UntrackCommand;
-import backend.academy.dto.validator.validators.GithubUrlValidator;
-import backend.academy.dto.validator.validators.StackOverflowUrlValidator;
+import backend.academy.bot.domain.ChatContext;
+import backend.academy.bot.fsm.command.HelpCommand;
+import backend.academy.bot.fsm.command.ListCommand;
+import backend.academy.bot.fsm.command.StartCommand;
+import backend.academy.bot.fsm.command.TrackCommand;
+import backend.academy.bot.fsm.command.UntrackCommand;
+import backend.academy.dto.validator.util.GithubUrlValidator;
+import backend.academy.dto.validator.util.StackOverflowUrlValidator;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +85,8 @@ public class HelpCommandTest {
             /help - список команд""";
 
         // Act
-        String message = helpCommand.formMessageFromIdleState(chatId);
+        String message =
+                helpCommand.handle(chatId, null, ChatContext.builder(IDLE).build());
 
         // Assert
         Assertions.assertEquals(expected, message);

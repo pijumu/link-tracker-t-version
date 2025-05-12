@@ -4,6 +4,7 @@ import backend.academy.dto.dto.ApiErrorResponse;
 import backend.academy.scrapper.exception.AlreadyTrackedUrlException;
 import backend.academy.scrapper.exception.ChatAlreadyRegisteredException;
 import backend.academy.scrapper.exception.ChatNotFoundException;
+import backend.academy.scrapper.exception.NoSuchLinkException;
 import backend.academy.scrapper.exception.UrlNotFoundException;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,17 @@ public class GlobalExceptionHandler {
                 Arrays.stream(e.getStackTrace()).map(Object::toString).collect(Collectors.toList()));
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchLinkException.class)
+    public ApiErrorResponse handleNoSuchLinkException(NoSuchLinkException e) {
+        return new ApiErrorResponse(
+                "Ссылка не найдена",
+                "URL_NOT_FOUND",
+                e.getClass().getName(),
+                e.getMessage(),
+                Arrays.stream(e.getStackTrace()).map(Object::toString).collect(Collectors.toList()));
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiErrorResponse handleValidationExceptions(MethodArgumentNotValidException e) {
@@ -80,7 +92,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ApiErrorResponse handleException(Exception e) {
-        log.error("Server error occurred", e);
+        log.error("Произошла неожиданная ошибка", e);
         return new ApiErrorResponse(
                 "Серверная ошибка",
                 "CHAT_NOT_FOUND",

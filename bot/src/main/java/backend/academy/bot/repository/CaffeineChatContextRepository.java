@@ -1,9 +1,11 @@
 package backend.academy.bot.repository;
 
+import static backend.academy.bot.fsm.State.IDLE;
+import static backend.academy.bot.fsm.State.NOT_REGISTERED;
+
 import backend.academy.bot.domain.CacheChatContextRepository;
 import backend.academy.bot.domain.ChatContext;
-import backend.academy.bot.fsm.state.StateEntry;
-import backend.academy.bot.service.ScrapperClient;
+import backend.academy.bot.scrapper.ScrapperClient;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,7 +33,7 @@ public class CaffeineChatContextRepository implements CacheChatContextRepository
 
     private ChatContext makeResponse(Long chaId) {
         return scrapperClient.isRegisteredChat(chaId)
-                ? ChatContext.fromState(StateEntry.IDLE)
-                : ChatContext.fromState(StateEntry.NOT_REGISTERED);
+                ? ChatContext.builder(IDLE).build()
+                : ChatContext.builder(NOT_REGISTERED).build();
     }
 }

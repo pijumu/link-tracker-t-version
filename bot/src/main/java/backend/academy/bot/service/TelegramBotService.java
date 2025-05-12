@@ -1,6 +1,6 @@
 package backend.academy.bot.service;
 
-import backend.academy.bot.fsm.transition.contract.Command;
+import backend.academy.bot.fsm.command.util.Command;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;

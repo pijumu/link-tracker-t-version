@@ -1,11 +1,12 @@
 package backend.academy.dto.dto;
 
-import backend.academy.dto.validator.ValidUrl;
+import backend.academy.dto.validator.annotation.ValidFilters;
+import backend.academy.dto.validator.annotation.ValidTags;
+import backend.academy.dto.validator.annotation.ValidUrl;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record AddLinkRequest(
         @JsonProperty("url") @ValidUrl String url,
-        @JsonProperty("tags") @NotNull List<String> tags,
-        @JsonProperty("filters") @NotNull List<String> filters) {}
+        @JsonProperty("tags") @ValidTags List<String> tags,
+        @JsonProperty("filters") @ValidFilters List<String> filters) {}
