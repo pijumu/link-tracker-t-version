@@ -19,8 +19,8 @@ import backend.academy.bot.exception.ScrapperException;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.Constants;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
 import backend.academy.bot.service.FieldValidatorService;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.ListLinksResponse;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class ChangeTagsCommand implements Command {
     private static final String NAME = "/change_tags";
     private static final String DESCRIPTION = "поменять теги для ссылки";
-    private final ScrapperClient client;
+    private final LinkScrapperService linkScrapperService;
     private final CacheChatContextRepository chatContextRepository;
     private final ChatContextToUpdateTagsRequestConverter converter;
     private final FieldValidatorService fieldValidatorService;
@@ -68,7 +68,7 @@ public class ChangeTagsCommand implements Command {
 
     private String handleAwaitUrl(Long chatId, String input, ChatContext context) {
         try {
-            ListLinksResponse list = client.getLinks(chatId, Collections.emptyList());
+            ListLinksResponse list = linkScrapperService.getLinks(chatId, Collections.emptyList());
             if (list == null || list.size() == 0) {
                 return Constants.repeatUrl(input);
             }
@@ -98,7 +98,8 @@ public class ChangeTagsCommand implements Command {
                     .attributes(context.attributes())
                     .attribute(TAGS, tags)
                     .build();
-            client.updateLinkTags(chatId, (Long) updated.attributes().get(LINK_ID), converter.convert(updated));
+            linkScrapperService.updateLinkTags(
+                    chatId, (Long) updated.attributes().get(LINK_ID), converter.convert(updated));
             chatContextRepository.put(chatId, ChatContext.builder(IDLE).build());
             return SUCCESSFULLY_TAGS_UPDATED;
         } catch (ConstraintViolationException e) {

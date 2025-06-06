@@ -72,6 +72,15 @@ public class LinkJpaAdapterRepository implements LinkRepository {
         });
     }
 
+    @Override
+    public List<Long> getChatIdsByUrlIdAndFilterLogin(Long urlId, String filterLogin) {
+        List<LinkView> links = linkJpaRepository.findAllByChatEntityId(urlId);
+        return links.stream()
+                .filter(link -> !link.getFilters().contains(filterLogin))
+                .map(LinkView::getId)
+                .toList();
+    }
+
     private LinkDto toLinkDto(LinkView link) {
         return new LinkDto(link.getId(), link.getUrlEntity().getUrl(), link.getFilters(), link.getTags());
     }

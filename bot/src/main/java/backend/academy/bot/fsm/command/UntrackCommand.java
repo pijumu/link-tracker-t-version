@@ -10,7 +10,7 @@ import backend.academy.bot.domain.CacheChatContextRepository;
 import backend.academy.bot.domain.ChatContext;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.ApiErrorResponse;
 import backend.academy.dto.dto.RemoveLinkRequest;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class UntrackCommand implements Command {
     private static final String NAME = "/untrack";
     private static final String DESCRIPTION = "остановить отслеживание ссылки";
-    private final ScrapperClient client;
+    private final LinkScrapperService linkScrapperService;
     private final CacheChatContextRepository chatContextRepository;
 
     @Override
@@ -56,7 +56,7 @@ public class UntrackCommand implements Command {
     private String handleAwaitUrl(Long chatId, String input) {
         chatContextRepository.put(chatId, ChatContext.builder(IDLE).build());
         try {
-            client.removeLink(chatId, new RemoveLinkRequest(input));
+            linkScrapperService.removeLink(chatId, new RemoveLinkRequest(input));
             return SUCCESSFULLY_REMOVED;
         } catch (HttpClientErrorException e) {
             log.warn("Ошибка при поиске url от chat {}", chatId);

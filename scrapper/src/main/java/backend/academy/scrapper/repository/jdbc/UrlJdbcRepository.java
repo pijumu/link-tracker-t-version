@@ -4,11 +4,9 @@ import backend.academy.dto.validator.util.UrlType;
 import backend.academy.scrapper.domain.UrlRepository;
 import backend.academy.scrapper.domain.dto.UrlAddDto;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,23 +54,17 @@ public class UrlJdbcRepository implements UrlRepository {
 
     @Override
     public void updateLastTimeUpdated(String url, Instant lastTimeUpdated) {
-        String sql = "UPDATE url AS u SET u.last_time_updated = ? WHERE u.url = ?";
+        String sql = "UPDATE url AS u SET last_time_updated = ? WHERE u.url = ?";
 
         jdbcTemplate.update(sql, new SqlParameterValue(Types.OTHER, Timestamp.from(lastTimeUpdated)), url);
     }
 
     @Override
-    public List<UrlInfoDto> findAllWithChatIds(Long threshold, Integer limit) {
-        // не LEFT JOIN так как нам не нужны url, который без chat_id
+    public List<UrlInfoDto> getBatch(Long threshold, Integer limit) {
         String sql =
                 """
-            SELECT u.id, u.url, u.url_type, u.last_time_updated, u.meta, l.chats
+            SELECT u.id, u.url, u.url_type, u.last_time_updated, u.meta
             FROM url AS u
-            JOIN LATERAL (
-                SELECT ARRAY_AGG(link.chat_id) AS chats
-                FROM link
-                WHERE u.id = link.url_id
-            ) AS l ON TRUE
             WHERE u.id > ?
             LIMIT ?
         """;
@@ -90,10 +82,7 @@ public class UrlJdbcRepository implements UrlRepository {
             @SuppressWarnings("unchecked")
             Map<String, String> meta = (Map<String, String>) rs.getObject("meta");
 
-            Array chatsArray = rs.getArray("chats");
-            List<Long> chatIds = chatsArray != null ? List.of((Long[]) chatsArray.getArray()) : Collections.emptyList();
-
-            return new UrlInfoDto(id, url, type, lastUpdateTime, meta, chatIds);
+            return new UrlInfoDto(id, url, type, lastUpdateTime, meta);
         };
     }
 }

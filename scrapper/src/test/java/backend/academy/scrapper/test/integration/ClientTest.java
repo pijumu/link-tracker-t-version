@@ -6,18 +6,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import backend.academy.dto.validator.util.UrlType;
+import backend.academy.scrapper.client.UpdateDto;
 import backend.academy.scrapper.client.github.GithubClientAdapter;
-import backend.academy.scrapper.client.github.util.GithubUpdateMessageFormatter;
 import backend.academy.scrapper.client.stackoverflow.StackOverflowClientAdapter;
-import backend.academy.scrapper.client.stackoverflow.util.StackOverflowUpdateMessageFormatter;
-import backend.academy.scrapper.domain.dto.UpdateInfoDto;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TimeZone;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -33,8 +30,6 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(
         classes = {
-            GithubUpdateMessageFormatter.class,
-            StackOverflowUpdateMessageFormatter.class,
             GithubClientAdapter.class,
             StackOverflowClientAdapter.class,
         })
@@ -247,54 +242,40 @@ public class ClientTest {
     @DisplayName(
             "Проверка внешних клиентов. Проверка pipeline WireMock -> GithubClient  -> GithubClientAdapter -> Update. Позитивный сценарий")
     void test1() {
-        // Arrange
-        String message =
-                """
-            Название: Test Issue from MCP Server (Docker)
-            Пользователь: SCSSC5678
-            Время создания: 2025-05-09 18:24:34
-            Превью описания: 123""";
 
         // Act
-        Optional<UpdateInfoDto> update = githubClientAdapter.getUpdate(new UrlInfoDto(
+        List<UpdateDto> updates = githubClientAdapter.getUpdates(new UrlInfoDto(
                 1L,
                 "https://xmpl.com",
                 UrlType.GITHUB,
                 Instant.parse("2000-04-10T20:09:31Z"),
-                Map.of("owner", "octocat", "repo", "Hello-World"),
-                List.of(1L)));
+                Map.of("owner", "octocat", "repo", "Hello-World")));
 
         // Assert
-        Assertions.assertTrue(update.isPresent());
-        Assertions.assertEquals(1, update.get().updates().size());
-        Assertions.assertEquals(message, update.get().updates().getFirst().description());
+        Assertions.assertFalse(updates.isEmpty());
+        Assertions.assertEquals(updates.size(), 1);
+        Assertions.assertEquals(updates.getFirst().url(), "https://xmpl.com");
+        Assertions.assertEquals(updates.getFirst().topic(), "Test Issue from MCP Server (Docker)");
+        Assertions.assertEquals(updates.getFirst().preview().getLeft().toString(), "GITHUB_ISSUE");
     }
 
     @Test
     @DisplayName(
             "Проверка внешних клиентов. Проверка pipeline WireMock -> StackOverflowClient -> StackOverflowClientAdapter -> Update. Позитивный сценарий")
     void test2() {
-        // Arrange
-        String messageForFirst =
-                """
-            Вопрос: What is a StackOverflowError?
-            Пользователь: C. K. Young
-            Время создания: 2008-10-18 08:17:19
-            Ответ к вопросу. Превью: 123""";
-
         // Act
-        Optional<UpdateInfoDto> update = stackOverflowClientAdapter.getUpdate(new UrlInfoDto(
+        List<UpdateDto> updates = stackOverflowClientAdapter.getUpdates(new UrlInfoDto(
                 1L,
                 "https://xmpl.com",
                 UrlType.STACKOVERFLOW,
                 Instant.parse("2000-04-10T20:09:31Z"),
-                Map.of("questionId", "214741"),
-                List.of(1L)));
+                Map.of("questionId", "214741")));
 
         // Assert
-        Assertions.assertTrue(update.isPresent());
-        Assertions.assertEquals(7, update.get().updates().size());
-        Assertions.assertEquals(
-                messageForFirst, update.get().updates().getFirst().description());
+        Assertions.assertFalse(updates.isEmpty());
+        Assertions.assertEquals(updates.size(), 7);
+        Assertions.assertEquals(updates.getFirst().url(), "https://xmpl.com");
+        Assertions.assertEquals(updates.getFirst().topic(), "What is a StackOverflowError?");
+        Assertions.assertEquals(updates.getFirst().preview().getLeft().toString(), "STACKOVERFLOW_ANSWER");
     }
 }

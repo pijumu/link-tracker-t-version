@@ -8,7 +8,7 @@ import backend.academy.bot.domain.CacheChatContextRepository;
 import backend.academy.bot.domain.ChatContext;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.scrapper.ChatScrapperClient;
 import backend.academy.dto.dto.ApiErrorResponse;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class StartCommand implements Command {
     private static final String NAME = "/start";
     private static final String DESCRIPTION = "регистрация чата";
-    private final ScrapperClient client;
+    private final ChatScrapperClient client;
     private final CacheChatContextRepository chatContextRepository;
 
     @Override

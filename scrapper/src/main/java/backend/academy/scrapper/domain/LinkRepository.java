@@ -17,4 +17,6 @@ public interface LinkRepository {
     List<LinkDto> findAllByChatIdWithTags(Long chatId, List<String> tags);
 
     Optional<LinkDto> updateTagsByLinkId(Long linkId, List<String> tags);
+
+    List<Long> getChatIdsByUrlIdAndFilterLogin(Long urlId, String filterLogin);
 }

@@ -12,9 +12,7 @@ public interface UrlRepository {
 
     Optional<Long> findByUrl(String url);
 
-    // На первый взгляд нужно обновлять по url, так как в UrlDto нет поля id, так как при добавлении у нас поля id нет.
-    // Чтобы не менять Dto для разных операций. Для производительности просто будет индекс на url.
     void updateLastTimeUpdated(String url, Instant lastTimeUpdated);
 
-    List<UrlInfoDto> findAllWithChatIds(Long threshold, Integer limit);
+    List<UrlInfoDto> getBatch(Long threshold, Integer limit);
 }

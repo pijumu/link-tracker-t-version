@@ -5,4 +5,4 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "app.client", ignoreUnknownFields = false)
-public record ClientProperties(GithubProperties github, StackOverflowProperties stackOverflow, String botUrl) {}
+public record ClientProperties(GithubProperties github, StackOverflowProperties stackOverflow) {}

@@ -61,7 +61,6 @@ public class LinkService {
         }
     }
 
-    @Transactional(readOnly = true)
     public ListLinksResponse getLinks(Long chatId) {
         List<LinkResponse> links = linkRepository.findAllByChatId(chatId).stream()
                 .map(linkDto -> new LinkResponse(linkDto.id(), linkDto.url(), linkDto.filters(), linkDto.tags()))
@@ -69,7 +68,6 @@ public class LinkService {
         return new ListLinksResponse(links, links.size());
     }
 
-    @Transactional(readOnly = true)
     public ListLinksResponse getLinksWithTags(Long chatId, List<String> tags) {
         List<LinkResponse> links = linkRepository.findAllByChatIdWithTags(chatId, tags).stream()
                 .map(linkDto -> new LinkResponse(linkDto.id(), linkDto.url(), linkDto.filters(), linkDto.tags()))

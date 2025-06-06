@@ -7,7 +7,7 @@ import backend.academy.bot.domain.ChatContext;
 import backend.academy.bot.exception.ScrapperException;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.ListLinksResponse;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class ListCommand implements Command {
     private static final String NAME = "/list";
     private static final String DESCRIPTION = "список всех ссылок";
-    private final ScrapperClient client;
+    private final LinkScrapperService linkScrapperService;
 
     @Override
     public String getName() {
@@ -45,7 +45,7 @@ public class ListCommand implements Command {
 
     private String handleIdle(Long chatId) {
         try {
-            ListLinksResponse list = client.getLinks(chatId, Collections.emptyList());
+            ListLinksResponse list = linkScrapperService.getLinks(chatId, Collections.emptyList());
             if (list == null || list.size() == 0) {
                 return NO_FOLLOWING_LINKS_MESSAGE;
             }

@@ -8,12 +8,20 @@ app:
       url: https://api.stackexchange.com/2.3
       key: ${SO_TOKEN_KEY}
 
-    bot-url: http://localhost:8080
+  bot:
+    url: http://localhost:8080
 
   data-access: jdbc # jdbc/jpa
 
+  message-transport: kafka # kafka/http
+
   update-checker:
     batch-size: 1000
+
+  link-update-events:
+    topic: link-update
+    partitions: 3
+    replicas: 2
 
 logging:
   level:
@@ -40,6 +48,20 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
+  kafka:
+    bootstrap-servers: localhost:19092,localhost:29092
+    producer.properties:
+      retries: 10
+      retry.backoff.ms: 500
+      enable-idempotence: true
+      acks: all
+      batch.size: 1024
+      linger.ms: 10000
+
+  cloud.zookeeper:
+    config.enabled: false
+    connect-string: localhost:2181
 
 server:
   port: 8081

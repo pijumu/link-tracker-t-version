@@ -123,6 +123,27 @@ public class LinkJdbcRepository implements LinkRepository {
         return result.stream().findFirst();
     }
 
+    @Override
+    public List<Long> getChatIdsByUrlIdAndFilterLogin(Long urlId, String filterLogin) {
+        String sql =
+                """
+            SELECT l.chat_id
+            FROM link AS l
+            WHERE l.url_id = ? AND NOT (l.filters @> ?)
+            """;
+
+        return jdbcTemplate.query(
+                sql,
+                ps -> {
+                    ps.setLong(1, urlId);
+                    ps.setArray(
+                            2,
+                            ps.getConnection()
+                                    .createArrayOf("text", List.of(filterLogin).toArray()));
+                },
+                (rs, rowNum) -> rs.getLong("chat_id"));
+    }
+
     private RowMapper<LinkDto> linkMapper() {
         return (rs, rowNum) -> {
             Long id = rs.getLong("id");

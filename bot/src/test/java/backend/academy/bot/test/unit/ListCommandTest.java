@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import backend.academy.bot.domain.ChatContext;
 import backend.academy.bot.fsm.command.ListCommand;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.LinkResponse;
 import backend.academy.dto.dto.ListLinksResponse;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ListCommandTest {
     @Mock
-    ScrapperClient scrapperClient;
+    LinkScrapperService linkScrapperService;
 
     @InjectMocks
     ListCommand listCommand;
@@ -43,7 +43,7 @@ public class ListCommandTest {
                 🔗 Ссылка: https://github.com/TaTaTa/PuPuPU
                 🏷 Теги: не указаны
                 🎛 Фильтры: tag1, tag2""";
-        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+        when(linkScrapperService.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(
                         List.of(
                                 new LinkResponse(
@@ -72,7 +72,7 @@ public class ListCommandTest {
         // Arrange
         Long chatId = 1L;
         String expected = "Вы не отслеживаете ссылок.";
-        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+        when(linkScrapperService.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         // Act

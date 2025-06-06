@@ -1,5 +1,5 @@
 package backend.academy.scrapper.client.github.util;
-
+/*
 import backend.academy.scrapper.client.github.dto.GithubUpdateResponse;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -27,3 +27,4 @@ public class GithubUpdateMessageFormatter {
         return text.length() <= 200 ? text : text.substring(0, 200);
     }
 }
+*/

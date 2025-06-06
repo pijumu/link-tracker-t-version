@@ -12,8 +12,8 @@ import backend.academy.bot.exception.ConstraintViolationException;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.Constants;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
 import backend.academy.bot.service.FieldValidatorService;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.ApiErrorResponse;
 import backend.academy.dto.dto.ListLinksResponse;
 import java.util.List;
@@ -30,7 +30,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class ByTagsCommand implements Command {
     private static final String NAME = "/by_tags";
     private static final String DESCRIPTION = "получить все ссылки по тегам";
-    private final ScrapperClient client;
+    private final LinkScrapperService linkScrapperService;
     private final CacheChatContextRepository chatContextRepository;
     private final FieldValidatorService fieldValidatorService;
 
@@ -62,7 +62,7 @@ public class ByTagsCommand implements Command {
     public String handleAwaitTags(Long chatId, String input, ChatContext context) {
         try {
             List<String> tags = fieldValidatorService.validateTags(input);
-            ListLinksResponse list = client.getLinks(chatId, tags);
+            ListLinksResponse list = linkScrapperService.getLinks(chatId, tags);
             String tagsInfo = String.join(", ", tags);
             if (list == null || list.size() == 0) {
                 return NO_FOLLOWING_LINKS_MESSAGE_WITH_TAGS.formatted(tagsInfo);

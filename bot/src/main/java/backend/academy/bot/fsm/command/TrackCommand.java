@@ -20,8 +20,8 @@ import backend.academy.bot.exception.ConstraintViolationException;
 import backend.academy.bot.exception.UnknownStateException;
 import backend.academy.bot.fsm.Constants;
 import backend.academy.bot.fsm.command.util.Command;
-import backend.academy.bot.scrapper.ScrapperClient;
 import backend.academy.bot.service.FieldValidatorService;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.dto.ApiErrorResponse;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class TrackCommand implements Command {
     private static final String NAME = "/track";
     private static final String DESCRIPTION = "добавить ссылку для отслеживания";
-    private final ScrapperClient client;
+    private final LinkScrapperService linkScrapperService;
     private final ChatContextToAddLinkRequestConverter converter;
     private final CacheChatContextRepository chatContextRepository;
     private final FieldValidatorService fieldValidatorService;
@@ -105,7 +105,7 @@ public class TrackCommand implements Command {
                     .attributes(context.attributes())
                     .attribute(FILTERS, filters)
                     .build();
-            client.addLink(chatId, converter.convert(updated));
+            linkScrapperService.addLink(chatId, converter.convert(updated));
             chatContextRepository.put(chatId, ChatContext.builder(IDLE).build());
             return SUCCESSFULLY_ADDED;
         } catch (ConstraintViolationException e) {

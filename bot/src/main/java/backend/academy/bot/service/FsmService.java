@@ -20,10 +20,6 @@ public class FsmService {
     private final NotRegistered notRegistered;
     private final InCommand inCommand;
 
-    /*
-        Есть ли смысл в несколько потоков делать?
-        Тогда по userId нужно выбирать поток. Хотя мы же не ожидаем сообщения без нашего ответа на предыдущее.
-    */
     public String handle(String input, Long chatId) {
         try {
             ChatContext context = cacheChatContextRepository.get(chatId);

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class FsmServiceTest extends FsmServiceContextTest {
+public class FsmServiceTest extends FsmServiceTestContext {
     @Test
     @DisplayName("Проверка ответа fsm на неизвестную команду из Idle состояния. Негативный сценарий")
     void test1() {
@@ -19,7 +19,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
 
         Long chatId = 1L;
         String invalidCommand = "/invalid";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
 
         // Act
         String message = fsmService.handle(invalidCommand, chatId);
@@ -50,7 +50,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
 
         Long chatId = 2L;
         String command = "/help";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
 
         // Act
         String message = fsmService.handle(command, chatId);
@@ -81,7 +81,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
 
         Long chatId = 3L;
         String command = "/help";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(false);
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(false);
 
         // Act
         String message = fsmService.handle(command, chatId);
@@ -110,8 +110,8 @@ public class FsmServiceTest extends FsmServiceContextTest {
 
         Long chatId = 4L;
         String command = "/list";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
-        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(linkScrapperService.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(
                         List.of(
                                 new LinkResponse(
@@ -142,8 +142,8 @@ public class FsmServiceTest extends FsmServiceContextTest {
 
         Long chatId = 5L;
         String command = "/list";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
-        when(scrapperClient.getLinks(chatId, Collections.emptyList()))
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(linkScrapperService.getLinks(chatId, Collections.emptyList()))
                 .thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         // Act
@@ -169,7 +169,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
         String inputUrl = "https://github.com/pijumu/ASL-Recognition-Model";
         String inputTags = "/skip";
         String inputFilters = "filter1";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
 
         // Act
         String message1 = fsmService.handle(command, chatId);
@@ -194,7 +194,7 @@ public class FsmServiceTest extends FsmServiceContextTest {
         Long chatId = 7L;
         String command = "/track";
         String inputUrl = "https://invalidLink.com";
-        when(scrapperClient.isRegisteredChat(chatId)).thenReturn(true);
+        when(chatScrapperClient.isRegisteredChat(chatId)).thenReturn(true);
 
         // Act
         String message1 = fsmService.handle(command, chatId);

@@ -1,22 +1,22 @@
 package backend.academy.scrapper.client.stackoverflow;
 
-import backend.academy.dto.dto.LinkUpdateDto;
 import backend.academy.dto.validator.util.UrlType;
+import backend.academy.scrapper.client.UpdateDto;
+import backend.academy.scrapper.client.UpdateType;
 import backend.academy.scrapper.client.stackoverflow.dto.StackOverflowTitleResponse;
 import backend.academy.scrapper.client.stackoverflow.dto.StackOverflowUpdateResponse;
-import backend.academy.scrapper.client.stackoverflow.dto.StackOverflowUpdateType;
 import backend.academy.scrapper.client.stackoverflow.util.StackOverflowClient;
-import backend.academy.scrapper.client.stackoverflow.util.StackOverflowUpdateMessageFormatter;
 import backend.academy.scrapper.client.util.ClientAdapter;
-import backend.academy.scrapper.domain.dto.UpdateInfoDto;
+import backend.academy.scrapper.client.util.Utility;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
 import backend.academy.scrapper.util.Constants;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StackOverflowClientAdapter implements ClientAdapter {
     private final StackOverflowClient stackOverflowClient;
-    private final StackOverflowUpdateMessageFormatter formatter;
+    // private final StackOverflowUpdateMessageFormatter formatter;
 
     @Override
     public UrlType getUrlType() {
@@ -32,7 +32,7 @@ public class StackOverflowClientAdapter implements ClientAdapter {
     }
 
     @Override
-    public Optional<UpdateInfoDto> getUpdate(UrlInfoDto urlInfoDto) {
+    public List<UpdateDto> getUpdates(UrlInfoDto urlInfoDto) {
 
         StackOverflowUpdateResponse updateAnswers = stackOverflowClient.getAnswers(
                 urlInfoDto.meta().get(Constants.QUESTION_ID),
@@ -42,50 +42,45 @@ public class StackOverflowClientAdapter implements ClientAdapter {
                 urlInfoDto.meta().get(Constants.QUESTION_ID),
                 urlInfoDto.lastTimeUpdated().getEpochSecond());
 
-        List<LinkUpdateDto> result = new ArrayList<>();
-
         if (isEmpty(updateAnswers) && isEmpty(updateComments)) {
-            return Optional.empty();
+            return Collections.emptyList();
         }
+
         StackOverflowTitleResponse titleResponse =
                 stackOverflowClient.getTitle(urlInfoDto.meta().get(Constants.QUESTION_ID));
 
-        if (isEmpty(titleResponse)) {
-            return Optional.empty();
-        }
-
         String title = titleResponse.items().getFirst().title();
 
-        Instant lastUpdateTime = null;
+        List<UpdateDto> updates = new ArrayList<>();
 
         // Добавление новых ответов
         if (!isEmpty(updateAnswers)) {
             updateAnswers.items().stream()
-                    .map(answer -> new LinkUpdateDto(
+                    .map(answer -> new UpdateDto(
+                            urlInfoDto.id(),
                             urlInfoDto.url(),
-                            formatter.formMessage(answer, title, StackOverflowUpdateType.ANSWER),
-                            urlInfoDto.chatIds()))
-                    .forEach(result::add);
-            lastUpdateTime = updateAnswers.items().getLast().creationDate();
+                            title,
+                            answer.owner().name(),
+                            answer.creationDate(),
+                            Pair.of(UpdateType.STACKOVERFLOW_ANSWER, Utility.first200(answer.body()))))
+                    .forEach(updates::add);
         }
 
         // Добавление новых комментариев
         if (!isEmpty(updateComments)) {
             updateComments.items().stream()
-                    .map(answer -> new LinkUpdateDto(
+                    .map(comment -> new UpdateDto(
+                            urlInfoDto.id(),
                             urlInfoDto.url(),
-                            formatter.formMessage(answer, title, StackOverflowUpdateType.COMMENT),
-                            urlInfoDto.chatIds()))
-                    .forEach(result::add);
-            Instant temp = updateComments.items().getLast().creationDate();
-            if (lastUpdateTime == null) {
-                lastUpdateTime = temp;
-            } else if (lastUpdateTime.isBefore(temp)) {
-                lastUpdateTime = temp;
-            }
+                            title,
+                            comment.owner().name(),
+                            comment.creationDate(),
+                            Pair.of(UpdateType.STACKOVERFLOW_COMMENT, Utility.first200(comment.body()))))
+                    .forEach(updates::add);
         }
-
-        return Optional.of(new UpdateInfoDto(lastUpdateTime, result));
+        return updates.stream()
+                .sorted(Comparator.comparing(UpdateDto::createdAt))
+                .toList();
     }
 
     public boolean isEmpty(StackOverflowUpdateResponse update) {

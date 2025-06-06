@@ -1,10 +1,9 @@
 package backend.academy.bot.config.properties;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public record BotProperties(@NotEmpty String telegramToken, @NotNull String scrapperUrl) {}
+@ConfigurationProperties(prefix = "app.bot", ignoreUnknownFields = false)
+public record BotProperties(@NotEmpty String telegramToken) {}

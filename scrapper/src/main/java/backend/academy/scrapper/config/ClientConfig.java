@@ -1,6 +1,5 @@
 package backend.academy.scrapper.config;
 
-import backend.academy.scrapper.bot.BotClient;
 import backend.academy.scrapper.client.github.util.GithubClient;
 import backend.academy.scrapper.client.stackoverflow.util.StackOverflowClient;
 import backend.academy.scrapper.config.properties.ClientProperties;
@@ -43,15 +42,5 @@ public class ClientConfig {
                         RestClientAdapter.create(restClient))
                 .build();
         return httpServiceProxyFactory.createClient(StackOverflowClient.class);
-    }
-
-    @Bean
-    public BotClient botClient(ClientProperties clientProperties) {
-        RestClient restClient =
-                RestClient.builder().baseUrl(clientProperties.botUrl()).build();
-        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(
-                        RestClientAdapter.create(restClient))
-                .build();
-        return httpServiceProxyFactory.createClient(BotClient.class);
     }
 }

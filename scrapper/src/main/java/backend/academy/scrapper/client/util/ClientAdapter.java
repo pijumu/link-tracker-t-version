@@ -1,12 +1,12 @@
 package backend.academy.scrapper.client.util;
 
 import backend.academy.dto.validator.util.UrlType;
-import backend.academy.scrapper.domain.dto.UpdateInfoDto;
+import backend.academy.scrapper.client.UpdateDto;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
-import java.util.Optional;
+import java.util.List;
 
 public interface ClientAdapter {
     UrlType getUrlType();
 
-    Optional<UpdateInfoDto> getUpdate(UrlInfoDto urlInfoDto);
+    List<UpdateDto> getUpdates(UrlInfoDto urlInfoDto);
 }

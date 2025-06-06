@@ -1,5 +1,5 @@
 package backend.academy.scrapper.client.stackoverflow.dto;
-
+/*
 import lombok.Getter;
 
 @Getter
@@ -13,3 +13,4 @@ public enum StackOverflowUpdateType {
         this.description = description;
     }
 }
+*/

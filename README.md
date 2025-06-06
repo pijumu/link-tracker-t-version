@@ -30,13 +30,31 @@ SO_TOKEN_KEY=your_stackoverflow_token
 
 ## Схемы
 
+### Приложение
+
+<div align="center">
+
+<img src="meta/Верхнеуровнево.png" alt="Архитектура приложения" width="700"/>
+<br/>
+<em>Рис. 1. Архитектура приложения</em>
+
+</div>
+
 ### Компоненты Bot’а
 
 <div align="center">
 
 <img src="meta/FSM.png" alt="FSM конечного автомата" width="700"/>
 <br/>
-<em>Рис. 1. Конечный автомат (FSM) команд бота</em>
+<em>Рис. 2. Конечный автомат (FSM) команд бота</em>
+
+</div>
+
+<div align="center">
+
+<img src="meta/Работа%20с%20FSM.png" alt="Работа с FSM" width="700"/>
+<br/>
+<em>Рис. 3. Работа с FSM</em>
 
 </div>
 
@@ -44,7 +62,7 @@ SO_TOKEN_KEY=your_stackoverflow_token
 
 <img src="meta/Работа%20с%20контекстом.png" alt="Контекст общения" width="700"/>
 <br/>
-<em>Рис. 2. Получение и хранение контекста диалога</em>
+<em>Рис. 4. Получение и хранение контекста диалога</em>
 
 </div>
 
@@ -54,7 +72,7 @@ SO_TOKEN_KEY=your_stackoverflow_token
 
 <img src="meta/БД%20данные.png" alt="ER-диаграмма базы данных" width="700"/>
 <br/>
-<em>Рис. 3. ER-диаграмма базы данных ссылок</em>
+<em>Рис. 5. ER-диаграмма базы данных ссылок</em>
 
 </div>
 
@@ -62,15 +80,15 @@ SO_TOKEN_KEY=your_stackoverflow_token
 
 <img src="meta/Работа%20с%20данными.png" alt="Слой доступа к данным" width="700"/>
 <br/>
-<em>Рис. 4. Слой доступа и адаптеры к данным</em>
+<em>Рис. 5. Слой доступа и адаптеры к данным</em>
 
 </div>
 
 <div align="center">
 
-<img src="meta/Проверка%20обновлений.png" alt="Поток обновлений" width="700"/>
+<img src="meta/Работа%20с%20обновлениями.png" alt="Поток обновлений" width="700"/>
 <br/>
-<em>Рис. 5. Поток обновлений (tracker) Scrapper’а</em>
+<em>Рис. 6. Поток обновлений (tracker) Scrapper’а</em>
 
 </div>
 

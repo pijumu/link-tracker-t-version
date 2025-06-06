@@ -1,5 +1,5 @@
 package backend.academy.scrapper.client.stackoverflow.util;
-
+/*
 import backend.academy.scrapper.client.stackoverflow.dto.StackOverflowUpdateResponse;
 import backend.academy.scrapper.client.stackoverflow.dto.StackOverflowUpdateType;
 import java.time.Instant;
@@ -32,3 +32,4 @@ public class StackOverflowUpdateMessageFormatter {
         return text.length() <= 200 ? text : text.substring(0, 200);
     }
 }
+*/

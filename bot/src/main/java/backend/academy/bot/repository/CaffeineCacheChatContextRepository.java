@@ -5,15 +5,15 @@ import static backend.academy.bot.fsm.State.NOT_REGISTERED;
 
 import backend.academy.bot.domain.CacheChatContextRepository;
 import backend.academy.bot.domain.ChatContext;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.scrapper.ChatScrapperClient;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class CaffeineChatContextRepository implements CacheChatContextRepository {
-    private final ScrapperClient scrapperClient;
+public class CaffeineCacheChatContextRepository implements CacheChatContextRepository {
+    private final ChatScrapperClient chatScrapperClient;
     private final Cache<Long, ChatContext> cache;
 
     @Override
@@ -32,7 +32,7 @@ public class CaffeineChatContextRepository implements CacheChatContextRepository
     }
 
     private ChatContext makeResponse(Long chaId) {
-        return scrapperClient.isRegisteredChat(chaId)
+        return chatScrapperClient.isRegisteredChat(chaId)
                 ? ChatContext.builder(IDLE).build()
                 : ChatContext.builder(NOT_REGISTERED).build();
     }

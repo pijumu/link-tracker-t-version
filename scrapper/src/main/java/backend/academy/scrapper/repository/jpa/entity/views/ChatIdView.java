@@ -1,7 +1,9 @@
 package backend.academy.scrapper.repository.jpa.entity.views;
 
-public interface UrlIdChatIdView {
-    Long getUrlId();
+import java.util.List;
 
+public interface ChatIdView {
     Long getChatId();
+
+    List<String> getFilters();
 }

@@ -1,5 +1,6 @@
 package backend.academy.scrapper.service.data;
 
+import backend.academy.scrapper.domain.LinkRepository;
 import backend.academy.scrapper.domain.UrlRepository;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
 import backend.academy.scrapper.exception.UpdateException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UrlService {
     private final UrlRepository urlRepository;
+    private final LinkRepository linkRepository;
 
     @Transactional
     public void updateLastTimeUpdated(String url, Instant lastTimeUpdated) {
@@ -28,10 +30,13 @@ public class UrlService {
         }
     }
 
-    @Transactional(readOnly = true)
+    public List<Long> getChatIdsByUrlIdAndFilterLogin(Long urlId, String filterLogin) {
+        return linkRepository.getChatIdsByUrlIdAndFilterLogin(urlId, filterLogin);
+    }
+
     public List<UrlInfoDto> getUrls(Long threshold, Integer limit) {
         try {
-            return urlRepository.findAllWithChatIds(threshold, limit);
+            return urlRepository.getBatch(threshold, limit);
         } catch (DataAccessException e) {
             log.warn("Не удалось получить список url threshold={} и limit={}.", threshold, limit);
             return Collections.emptyList();

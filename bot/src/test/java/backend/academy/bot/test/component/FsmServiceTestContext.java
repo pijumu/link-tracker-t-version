@@ -14,10 +14,11 @@ import backend.academy.bot.fsm.command.UntrackCommand;
 import backend.academy.bot.fsm.highhierarchystate.Idle;
 import backend.academy.bot.fsm.highhierarchystate.InCommand;
 import backend.academy.bot.fsm.highhierarchystate.NotRegistered;
-import backend.academy.bot.repository.CaffeineChatContextRepository;
-import backend.academy.bot.scrapper.ScrapperClient;
+import backend.academy.bot.repository.CaffeineCacheChatContextRepository;
+import backend.academy.bot.scrapper.ChatScrapperClient;
 import backend.academy.bot.service.FieldValidatorService;
 import backend.academy.bot.service.FsmService;
+import backend.academy.bot.service.data.LinkScrapperService;
 import backend.academy.dto.validator.service.FiltersValidatorService;
 import backend.academy.dto.validator.service.TagsValidatorService;
 import backend.academy.dto.validator.service.UrlValidatorService;
@@ -31,9 +32,19 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @SpringBootTest(
         classes = {
             FsmService.class,
-            ScrapperClient.class,
-            CaffeineChatContextRepository.class,
+
+            // clients
+            ChatScrapperClient.class,
+            LinkScrapperService.class,
+
+            // cache
+            CaffeineCacheChatContextRepository.class,
+
+            // converter
             ChatContextToAddLinkRequestConverter.class,
+            ChatContextToUpdateTagsRequestConverter.class,
+
+            // commands
             Idle.class,
             NotRegistered.class,
             InCommand.class,
@@ -46,20 +57,24 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
             ChangeTagsCommand.class,
             HelpCommand.class,
             CommandRegistry.class,
+
+            // validators
             GithubUrlValidator.class,
             StackOverflowUrlValidator.class,
             UrlValidatorService.class,
             TagsValidatorService.class,
             FiltersValidatorService.class,
-            FieldValidatorService.class,
-            ChatContextToUpdateTagsRequestConverter.class
+            FieldValidatorService.class
         })
 @Import(CacheTestConfig.class)
-public class FsmServiceContextTest {
+public class FsmServiceTestContext {
 
     @Autowired
     FsmService fsmService;
 
     @MockitoBean
-    ScrapperClient scrapperClient;
+    LinkScrapperService linkScrapperService;
+
+    @MockitoBean
+    ChatScrapperClient chatScrapperClient;
 }

@@ -1,6 +1,19 @@
 app:
-  telegram-token: ${TELEGRAM_TOKEN}
-  scrapper-url: http://localhost:8081
+  bot:
+    telegram-token: ${TELEGRAM_TOKEN}
+
+  scrapper:
+    url: http://localhost:8081
+
+  link-update-events:
+    topic: link-update
+    concurrency: 3
+
+  notifications:
+    mode: realtime #digest/realtime
+    digest:
+      cron: "0 0 10 * * ?"
+      zone: "Europe/Moscow"
 
 logging:
   level:
@@ -9,12 +22,43 @@ logging:
 spring:
   application:
     name: Bot
+
   liquibase:
     enabled: false
+
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
+  kafka:
+    bootstrap-servers: localhost:19092,localhost:29092
+
+    consumer.properties:
+      enable.auto.commit: false
+      auto.offset.reset: earliest
+      isolation.level: read_committed
+      fetch.min.bytes: 1024
+      fetch.max.bytes: 1048576
+      fetch.max.wait.ms: 10000
+      max.poll.interval.ms: 10000
+      max.poll.records: 10
+
+    producer.properties:
+      retries: 10
+      acks: all
+      batch.size: 1024
+      linger.ms: 10000
+
+    cloud.zookeeper:
+      config.enabled: false
+      connect-string: localhost:2181
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD}
 
 server:
   port: 8080

@@ -1,18 +1,19 @@
 package backend.academy.scrapper.client.github;
 
-import backend.academy.dto.dto.LinkUpdateDto;
 import backend.academy.dto.validator.util.UrlType;
+import backend.academy.scrapper.client.UpdateDto;
+import backend.academy.scrapper.client.UpdateType;
 import backend.academy.scrapper.client.github.dto.GithubUpdateResponse;
 import backend.academy.scrapper.client.github.util.GithubClient;
-import backend.academy.scrapper.client.github.util.GithubUpdateMessageFormatter;
 import backend.academy.scrapper.client.util.ClientAdapter;
-import backend.academy.scrapper.domain.dto.UpdateInfoDto;
+import backend.academy.scrapper.client.util.Utility;
 import backend.academy.scrapper.domain.dto.UrlInfoDto;
 import backend.academy.scrapper.util.Constants;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GithubClientAdapter implements ClientAdapter {
     private final GithubClient githubClient;
-    private final GithubUpdateMessageFormatter formatter;
 
     @Override
     public UrlType getUrlType() {
@@ -28,18 +28,25 @@ public class GithubClientAdapter implements ClientAdapter {
     }
 
     @Override
-    public Optional<UpdateInfoDto> getUpdate(UrlInfoDto urlInfoDto) {
+    public List<UpdateDto> getUpdates(UrlInfoDto urlInfoDto) {
         List<GithubUpdateResponse> updates = githubClient.getLastUpdate(
                 urlInfoDto.meta().get(Constants.OWNER),
                 urlInfoDto.meta().get(Constants.REPO),
                 urlInfoDto.lastTimeUpdated());
         if (updates.isEmpty()) {
-            return Optional.empty();
+            return Collections.emptyList();
         }
 
-        List<LinkUpdateDto> result = updates.stream()
-                .map(update -> new LinkUpdateDto(urlInfoDto.url(), formatter.formMessage(update), urlInfoDto.chatIds()))
+        return updates.stream()
+                .map(update -> new UpdateDto(
+                        urlInfoDto.id(),
+                        urlInfoDto.url(),
+                        update.title(),
+                        update.user().name(),
+                        update.creationDate(),
+                        Pair.of(
+                                update.isPullRequest() ? UpdateType.GITHUB_PULL_REQUEST : UpdateType.GITHUB_ISSUE,
+                                Utility.first200(update.body()))))
                 .toList();
-        return Optional.of(new UpdateInfoDto(updates.getLast().creationDate(), result));
     }
 }
