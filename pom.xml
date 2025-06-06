@@ -39,7 +39,8 @@
 
         <caffeine.version>3.1.8</caffeine.version>
 
-        <confluent.version>7.9.1</confluent.version>
+        <mockito.version>5.18.0</mockito.version>
+
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <joda-time.version>2.10.14</joda-time.version>
         <testcontainers-redis-module.version>2.2.4</testcontainers-redis-module.version>
@@ -162,14 +163,6 @@
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
             </dependency>
-            <!-- JSON schema for schemaRegistry-->
-            <dependency>
-                <groupId>io.confluent</groupId>
-                <artifactId>kafka-json-schema-serializer</artifactId>
-                <version>${confluent.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
@@ -179,6 +172,13 @@
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
                 <version>${checkerframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${mockito.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -215,13 +215,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>https://packages.confluent.io/maven/</url>
-        </repository>
-    </repositories>
 
     <build>
         <pluginManagement>
@@ -410,9 +403,6 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                        <!-- Added to warning-->
-                        <argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
-                            -Xshare:off</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
