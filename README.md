@@ -1,8 +1,4 @@
-![Build](https://github.com/central-university-dev/backend-academy-2025-spring-template/actions/workflows/build.yaml/badge.svg)
-
 # Link Tracker
-
-<!-- этот файл можно и нужно менять -->
 
 Проект сделан в рамках курса Академия Бэкенда. Написал Сторожев Юрий Игоревич.
 
@@ -15,18 +11,17 @@
 * Bot
 * Scrapper
 
-Для работы требуется БД `PostgreSQL`. Присутствует опциональная зависимость на `Kafka`.
-
-На данный момент проект можно запустить запустив приложения bot и scrapper в IDEA.
-Чтобы опробовать бота в telegram создайтe .env в корне проекта, указав:
-
-```cmd
-TELEGRAM_TOKEN=your_telegram_token
-GITHUB_TOKEN=your_github_token
-SO_TOKEN_KEY=your_stackoverflow_token
-```
-
-Для дополнительной справки: [HELP.md](./HELP.md)
+Notes:
+- 22.08.2025. На данный момент проект перерабатывается:
+    - Первая стадия:
+        - Заменить maven на gradle
+        - Сделать более проcтым для расширения fsm. Как вариант, перевести fsm на generic. 
+        - Почистить репозиторий)
+        - Добавить более грамотные логи
+    - Вторая стадия:
+        - Добавить DockerFile для обоих приложений
+        - Добавить Prometheus + Grafana
+        - Увеличить надёжность с помощью CircuitBreaker. 
 
 ## Схемы
 
